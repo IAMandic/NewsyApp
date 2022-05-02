@@ -1,0 +1,38 @@
+﻿@page "/EditArticle/{ArticleId}"
+@inject IArticleService _articleService;
+@inject NavigationManager _navigationManager;
+<h3>Edit Article</h3>
+
+@if(Article == null)
+{
+    <p> Loading...</p>
+}
+else
+{
+    <EditForm Model = "@Article" OnValidSubmit = "@UpdateArticleAsync" >
+        <ArticleFields Article = "@Article"></ArticleFields>
+        <button type = "submit" class="btn-success">Update</button>
+        <button type = "button" @onclick="Close">Close</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public string ArticleId { get; set; }
+    private Article Article { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Article = await _articleService.GetArticleAsync(int.Parse(ArticleId));
+    }
+
+    private async Task UpdateArticleAsync()
+    {
+        await _articleService.UpdateArticleAsync(Article);
+        Close();
+    }
+    private void Close()
+    {
+        _navigationManager.NavigateTo("/Articles");
+    }
+}

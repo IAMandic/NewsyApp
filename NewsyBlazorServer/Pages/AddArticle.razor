@@ -1,0 +1,38 @@
+﻿@page "/AddArticle"
+
+<h3>Add Article</h3>
+@inject IArticleService _articleService;
+@inject NavigationManager _navigationManager;
+@code {
+    public Article Article { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Article = new Article();
+        Article.Updated = DateTime.Now;
+        Article.UserId = 1;
+    }
+
+    private void Close()
+    {
+        _navigationManager.NavigateTo("/Articles");
+    }
+    private async Task AddArticleAsync()
+    {
+        await _articleService.AddArticlteAsync(Article);
+        Close();
+    }
+}
+
+<EditForm Model="@Article" OnValidSubmit="@AddArticleAsync">
+    <ArticleFields Article="@Article"></ArticleFields>
+    <button class="btn-success" type="submit">
+        <span class="oi-pencil"></span>
+        Add
+    </button>
+    <button type="button" class="btn-danger" @onclick="Close">
+        <span class="oi oi-media-skip-backward"></span>
+        Close
+    </button>
+
+</EditForm>

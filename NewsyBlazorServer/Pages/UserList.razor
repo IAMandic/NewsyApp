@@ -1,0 +1,53 @@
+﻿@page "/"
+
+<h3>UserList</h3>
+@inject UserService _userService;
+@code {
+    private List<User> Users { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Users = await _userService.GetUsers();
+    }
+
+}
+
+@if (Users == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Surname
+                </th>
+                <th>
+                    Email
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Users)
+            {
+                <tr>
+                    <td>
+                        @user.Name
+                    </td>
+                    <td>
+                        @user.Surname
+                    </td>
+                    <td>
+                        @user.Email
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}

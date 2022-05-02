@@ -1,0 +1,13 @@
+﻿@code {
+    [Parameter]
+    public Article Article { get; set; }
+}
+<div class="ArticleFields">
+    <label for="ArticleTitle">Article title</label>
+    <InputText id="ArticleTitle" class="form-control" @bind-Value="@Article.Title"></InputText>
+    <label for="ArticleCreated">Article created</label>
+    <InputDate id="ArticleCreated" class="form-control" @bind-Value="@Article.Created"></InputDate>
+    <label for"ArticleText">Article text</label>
+    <InputText id="ArticleText" class="form-control" @bind-Value="@Article.Text"></InputText>
+
+</div>
