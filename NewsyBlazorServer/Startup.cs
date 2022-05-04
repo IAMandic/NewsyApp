@@ -1,18 +1,16 @@
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using NewsyBlazorServer.Data;
 using NewsyBlazorServer.Services;
 using NewsyBlazorServer.Services.Articles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using NewsyBlazorServer.Services.AuthService;
 
 namespace NewsyBlazorServer
 {
@@ -35,8 +33,13 @@ namespace NewsyBlazorServer
             services.AddHttpClient();
             services.AddScoped<UserService>();
             services.AddScoped<IArticleService, ArticleService>();
-            services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
             services.AddAuthenticationCore();
+            services.AddBlazoredLocalStorage();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddOptions();
+            services.AddAuthenticationCore();
+            services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

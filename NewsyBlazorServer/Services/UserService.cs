@@ -20,5 +20,8 @@ namespace NewsyBlazorServer.Services
         {
             return await _httpClient.GetFromJsonAsync<List<User>>(BaseApiUrl);
         }
+
+
+
     }
 }

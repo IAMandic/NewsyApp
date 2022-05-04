@@ -15,6 +15,7 @@ namespace DomainModel.Models
         public string Password { get; set; }
         public string Email { get; set; }
         public int RoleId { get; set; }
+        public Role Role { get; set; } = new Role { RoleName = "Reader", Id = 2, IsAdmin = false };
         public User()
         {
 

@@ -1,4 +1,5 @@
 ﻿using DomainModel.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NewsyWebAPI.Repositories.Article;
@@ -28,6 +29,7 @@ namespace NewsyWebAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+        [Authorize]
         [HttpPost]
         public IActionResult AddArticle([FromBody] Article article)
         {
@@ -44,7 +46,7 @@ namespace NewsyWebAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-
+        [Authorize]
         [HttpPut]
         public IActionResult UpdateArticle([FromBody] Article article)
         {

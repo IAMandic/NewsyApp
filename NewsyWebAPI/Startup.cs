@@ -1,16 +1,22 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NewsyWebAPI.DatabaseContext;
 using NewsyWebAPI.Repositories;
 using NewsyWebAPI.Repositories.Article;
+using NewsyWebAPI.Repositories.Roles;
+using NewsyWebAPI.Services.AuthService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,6 +45,22 @@ namespace NewsyWebAPI
             services.AddDbContext<NewsyDBContext>(option => option.UseSqlServer(Configuration.GetConnectionString("NewsyDBConnection")));
             services.AddScoped<UserRepository>();
             services.AddScoped<IArticleRepository, ArticleRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IAuthService, AuthService>();
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey =
+                        new SymmetricSecurityKey(System.Text.Encoding.UTF8
+                        .GetBytes(Configuration.GetSection("JWT:Key").Value)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+            services.AddHttpContextAccessor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,7 +76,7 @@ namespace NewsyWebAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

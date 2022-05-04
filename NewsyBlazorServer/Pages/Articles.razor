@@ -1,4 +1,4 @@
-﻿@page "/Articles"
+﻿@page "/"
 @inject IArticleService _articleService;
 <h3>Articles</h3>
 
@@ -22,9 +22,11 @@ else
                 <div class="col-md">
                     <h2>@article.Title</h2>
                 </div>
+                <AuthorizeView Roles="Author">
                 <div class ="col-sm">
                    <a href ="/EditArticle/@article.Id" class="btn btn-primary"><span class = "oi oi-pencil"></span></a>
                 </div>
+                </AuthorizeView>
             </div>
             <div class="row">
                 <div class="col-sm">

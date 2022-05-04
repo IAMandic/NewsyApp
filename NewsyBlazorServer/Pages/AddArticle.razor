@@ -1,8 +1,12 @@
 ﻿@page "/AddArticle"
+@using System.Security.Claims
 
 <h3>Add Article</h3>
 @inject IArticleService _articleService;
 @inject NavigationManager _navigationManager;
+@inject ILocalStorageService _localStorageService;
+@inject AuthenticationStateProvider _authProvider;
+@inject UserService _userService;
 @code {
     public Article Article { get; set; }
 
@@ -10,12 +14,19 @@
     {
         Article = new Article();
         Article.Updated = DateTime.Now;
-        Article.UserId = 1;
+        Article.Created = DateTime.Now;
+        var authState = await _authProvider.GetAuthenticationStateAsync();
+        var identity = authState.User.Identity;
+        var users = await _userService.GetUsers();
+        var user = users.FirstOrDefault(item => item.UserName == identity.Name.ToString());
+        if (user != null)
+            Article.UserId = user.Id;
+
     }
 
     private void Close()
     {
-        _navigationManager.NavigateTo("/Articles");
+        _navigationManager.NavigateTo("/");
     }
     private async Task AddArticleAsync()
     {
@@ -26,12 +37,13 @@
 
 <EditForm Model="@Article" OnValidSubmit="@AddArticleAsync">
     <ArticleFields Article="@Article"></ArticleFields>
-    <button class="btn-success" type="submit">
-        <span class="oi-pencil"></span>
+    <button class="btn btn-success" type="submit">
+        <span class="glyphicon glyphicon-ok"></span>
         Add
     </button>
-    <button type="button" class="btn-danger" @onclick="Close">
-        <span class="oi oi-media-skip-backward"></span>
+    <button type="button" class="btn btn-danger" @onclick="Close">
+        @*<span class="oi oi-media-skip-backward"></span>*@
+        <span class="glyphicon glyphicon-remove"></span>
         Close
     </button>
 
